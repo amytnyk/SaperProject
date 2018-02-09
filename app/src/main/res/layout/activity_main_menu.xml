@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main_menu"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="alexm.saperproject.MainMenu">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/night_sky"
+        android:layout_alignParentTop="true"
+        android:id="@+id/imageView"
+        android:scaleType="fitXY" />
+
+    <TextView
+        android:text="Saper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp"
+        android:id="@+id/textView4"
+        android:textSize="60sp"
+        android:textColor="@android:color/holo_green_dark" />
+
+    <TextView
+        android:text="Open Beta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/textView5"
+        android:textColor="@android:color/holo_green_dark" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/settings"
+        android:layout_marginTop="45dp"
+        android:id="@+id/button_settings"
+        android:background="@null"
+        android:layout_below="@+id/button_start_game"
+        android:layout_alignStart="@+id/button_start_game"
+        android:onClick="onButtonSettingsClick" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/start_game"
+        android:id="@+id/button_start_game"
+        android:background="@null"
+        android:layout_below="@+id/textView4"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="82dp"
+        android:onClick="onButtonStartGameClick" />
+
+</RelativeLayout>
