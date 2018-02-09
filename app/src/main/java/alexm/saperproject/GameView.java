@@ -52,6 +52,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
     private int max_time = 60;
     private Step step;
     boolean developer_mode = false;
+    private Bitmap background;
+    private Bitmap mainMenu;
+
     public GameView(Context context) {
         super(context);
         getHolder().addCallback(this);
@@ -232,7 +235,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
                 if (x > screenWidth / 2 - screenWidth / 6 && x < Resources.getSystem().getDisplayMetrics().widthPixels / 2 + screenWidth / 6 && y < screenHeight / 6 / 2){
                     step = Step.Game;
                     StartGame();
-                } else if(x < (int)(screenWidth / 3.5) && y < screenHeight && y > screenHeight - screenHeight / 15){
+                } else if(x < screenWidth / 2 && y < screenHeight && y > screenHeight - screenHeight / 15){
                     Intent intent = new Intent(getContext(), MainMenu.class);
                     getContext().startActivity(intent);
                 }
@@ -273,7 +276,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        Bitmap background = Bitmap.createBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.night_sky));
+        background = Bitmap.createBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.night_sky));
         background = Bitmap.createScaledBitmap(background, screenWidth, screenHeight, true);
         canvas.drawBitmap(background, 0, 0,  null);
         Bitmap start_button;
@@ -349,8 +352,8 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
             text = "Oh no, this is bomb!";
         }
         canvas.drawText(text, 0, screenHeight / 6 / 2 + screenHeight / 30,paint4);
-        Bitmap mainMenu = Bitmap.createBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.settings));
-        mainMenu = Bitmap.createScaledBitmap(mainMenu, (int)(screenWidth / 3.5), screenHeight / 15, true);
+        mainMenu = Bitmap.createBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.main_menu));
+        mainMenu = Bitmap.createScaledBitmap(mainMenu, screenWidth / 2, screenHeight / 15, true);
         canvas.drawBitmap(mainMenu, 0, screenHeight -  screenHeight / 15,null);
     }
 
