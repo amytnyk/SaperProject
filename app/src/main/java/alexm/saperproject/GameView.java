@@ -35,6 +35,7 @@ import static java.lang.Math.sin;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback{
     private MainThread thread;
     public Timer timer;
+    public Timer touchTimer;
     private boolean thread_started = false;
     private List<List<Field>> fields;
     private int bombs_count = 3;
@@ -49,11 +50,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
     private List<List<Integer>> numbers;
     public int count = 0;
     public int turns = 0;
+    private int choosed_field_x = -1;
+    private int choosed_field_y = -1;
     private int max_time = 60;
     private Step step;
     boolean developer_mode = false;
     private Bitmap background;
     private Bitmap mainMenu;
+    int tm = 0;
 
     public GameView(Context context) {
         super(context);
@@ -83,12 +87,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
         step = Step.Game;
         LoadSettings();
         Generate();
+        tm = 0;
+        choosed_field_x = -1;
+        choosed_field_y = -1;
     }
     public void Generate(){
         size = new_size;
         bombs_count = new_bombs_count;
         if (step != Step.NotStarted) {
             timer.cancel();
+            touchTimer.cancel();
         }
         fields.clear();
         bombs.clear();
@@ -158,6 +166,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
             }
         };
         timer.scheduleAtFixedRate(task, 1000, 1000);
+        touchTimer = new Timer();
+        TimerTask task2 = new TimerTask() {
+            @Override
+            public void run() {
+                tm++;
+            }
+        };
+        touchTimer.scheduleAtFixedRate(task2, 500, 500);
     }
     public void AlotOfTime(){
         step = Step.Time;
@@ -228,7 +244,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_MOVE:
-
+                break;
             case MotionEvent.ACTION_DOWN:
                 float x = event.getX();
                 float y = event.getY();
@@ -244,26 +260,42 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
                 if (y <  screenHeight / 2 && y > 0 && step == Step.Game){
                     int w = (int) x / (screenWidth / size);
                     int h = (int) y / (screenHeight / 2 / size);
-                    if (fields.get(w).get(h) != Field.discovered){
-                        fields.get(w).set(h, Field.discovered);
-                        turns++;
-                        if (bombs.contains(Pair.create(w, h)) == false){
-                            if (turns + bombs_count == size * size){
-                                step = Step.Win;
-                            }
-                            if (numbers.get(w).get(h) == 0){
-                                OpenAll(w, h);
-                            }
-                            fields.get(w).set(h, Field.discovered);
-                        }
-                        else{
-                            fields.get(w).set(h, Field.bomb);
-                            BombActivated();
-                        }
+                    if (choosed_field_x != -1 && choosed_field_x != w){
+                        tm = 0;
+                    }
+                    if (fields.get(w).get(h) != Field.discovered) {
+                        choosed_field_x = w;
+                        choosed_field_y = h;
                     }
                 }
                 break;
             case MotionEvent.ACTION_UP:
+                if (choosed_field_x != -1 && choosed_field_y != -1) {
+                    if (tm > 3) {
+                        fields.get(choosed_field_x).set(choosed_field_y, Field.Bomb_p);
+                        tm = 0;
+                    } else {
+                        if (fields.get(choosed_field_x).get(choosed_field_y) != Field.discovered) {
+                            fields.get(choosed_field_x).set(choosed_field_y, Field.discovered);
+                            turns++;
+                            if (bombs.contains(Pair.create(choosed_field_x, choosed_field_y)) == false) {
+                                if (turns + bombs_count == size * size) {
+                                    step = Step.Win;
+                                }
+                                if (numbers.get(choosed_field_x).get(choosed_field_y) == 0) {
+                                    OpenAll(choosed_field_x, choosed_field_y);
+                                }
+                                fields.get(choosed_field_x).set(choosed_field_y, Field.discovered);
+                            } else {
+                                fields.get(choosed_field_x).set(choosed_field_y, Field.bomb);
+                                BombActivated();
+                            }
+                        }
+                    }
+                }
+                tm = 0;
+                choosed_field_x = -1;
+                choosed_field_y = -1;
                 break;
             default:
                 break;
@@ -303,6 +335,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback{
                         break;
                     case empty:
                         paint.setColor(Color.LTGRAY);
+                        break;
+                    case Bomb_p:
+                        paint.setColor(Color.BLUE);
                         break;
                 }
                 int pos_x = screenWidth / size * i;

@@ -7,5 +7,6 @@ package alexm.saperproject;
 public enum Field {
     bomb,
     discovered,
-    empty
+    empty,
+    Bomb_p
 }
